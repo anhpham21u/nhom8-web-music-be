@@ -36,6 +36,10 @@ const playlistSchema = new mongoose.Schema(
         message: 'Bạn không thể thêm hơn 30 ca khúc vào một danh sách',
       },
     },
+    isShared: {
+      type: Boolean,
+      default: false, // Mặc định là chưa được chia sẻ
+    },
   },
   {
     toJSON: { virtuals: true },

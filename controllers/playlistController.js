@@ -33,6 +33,70 @@ exports.resizePlaylistImg = catchAsync(async (req, res, next) => {
 
 const upload = multer({ storage, fileFilter });
 
+exports.deleteSharePlaylist = catchAsync(async (req, res, next) => {
+  const playlist = await Playlist.findById(req.params.id)
+    .populate('user', 'name img');
+
+  // Check play list có tồn tại không
+  if (!playlist) {
+    return next(new AppError('Playlist không tồn tại', 404));
+  }
+
+  // Check user có sở hữu playlist không
+  if (playlist.user.id.toString() !== req.user.id) {
+    return next(new AppError('Bạn không có quyền truy cập vào playlist này', 403));
+  }
+
+  playlist.isShared = false;
+  await playlist.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      playlist,
+    },
+  });
+});
+
+exports.sharePlaylist = catchAsync(async (req, res, next) => {
+  const playlist = await Playlist.findById(req.params.id)
+    .populate('user', 'name img');
+
+  // Check play list có tồn tại không
+  if (!playlist) {
+    return next(new AppError('Playlist không tồn tại', 404));
+  }
+
+  // Check user có sở hữu playlist không
+  if (playlist.user.id.toString() !== req.user.id) {
+    return next(new AppError('Bạn không có quyền truy cập vào playlist này', 403));
+  }
+
+  playlist.isShared = true;
+  await playlist.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      playlist,
+    },
+  });
+});
+
+exports.getSharePlaylist = catchAsync(async (req, res, next) => {
+  const playlists = await Playlist.find({ isShared: true });
+
+  // console.log(playlists);
+
+  res.status(200).json({
+    status: 'success',
+    length: playlists.length,
+    data: {
+      playlists,
+    },
+  });
+});
+
 exports.uploadPlaylistImg = upload.single('img');
 
 exports.getAllPlaylists = catchAsync(async (req, res, next) => {

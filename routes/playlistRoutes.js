@@ -5,6 +5,15 @@ const authController = require('../controllers/authController');
 const router = express.Router({ mergeParams: true });
 
 router
+  .route('/share')
+  .get(authController.protect, playlistController.getSharePlaylist);
+
+router
+  .route('/share/:id')
+  .post(authController.protect, playlistController.sharePlaylist)
+  .delete(authController.protect, playlistController.deleteSharePlaylist);
+
+router
   .route('/')
   .get(authController.protect, playlistController.getAllPlaylists)
   .post(authController.protect, playlistController.createPlaylist);
