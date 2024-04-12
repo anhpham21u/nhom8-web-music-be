@@ -11,7 +11,7 @@ const songRouter = require('./routes/songRoutes');
 const userRouter = require('./routes/userRoutes');
 const playlistRouter = require('./routes/playlistRoutes');
 const searchRouter = require('./routes/searchRoutes');
-
+const commentRouter = require('./routes/commentRoutes');
 const app = express();
 
 app.use(
@@ -34,6 +34,7 @@ app.use('/api/v1/songs', songRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/playlists', playlistRouter);
 app.use('/api/v1/search', searchRouter);
+app.use('/api/v1/comments', commentRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Không tìm thấy ${req.originalUrl} tại máy chủ`, 404));
