@@ -1,9 +1,13 @@
 const SongComment = require('../models/commentModel');
+const { io } = require('./../app');
 
 exports.createSongComment = async (req, res) => {
     try {
         const { songId, userId, comment } = req.body;
         const newComment = await SongComment.create({ songId, userId, comment });
+
+        // io.emit('test', 'Đây là message test emit');
+        console.log(io);
         res.status(201).json(newComment);
     } catch (err) {
         res.status(500).json({ message: err.message });
