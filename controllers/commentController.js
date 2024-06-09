@@ -5,9 +5,10 @@ exports.createSongComment = async (req, res) => {
     try {
         const { songId, userId, comment } = req.body;
         const newComment = await SongComment.create({ songId, userId, comment });
+        const populatedComment = await SongComment.findById(newComment._id).populate('userId', 'name');
 
-        io.emit('test', 'Đây là message test emit');
-        res.status(201).json(newComment);
+        io.emit('new message', populatedComment);
+        res.status(201).json(populatedComment);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -16,7 +17,9 @@ exports.createSongComment = async (req, res) => {
 exports.getCommentsBySongId = async (req, res) => {
     try {
         const { songId } = req.params;
-        const comments = await SongComment.find({ songId }).populate('userId', 'name'); // Lấy các nhận xét và thêm thông tin người dùng (ví dụ: username)
+        const comments = await SongComment.find({ songId })
+            .populate('userId', 'name') // Lấy các nhận xét và thêm thông tin người dùng (ví dụ: username)
+            .sort({ createdAt: -1 }); // Sắp xếp từ mới nhất đến cũ nhất
         res.status(200).json(comments);
     } catch (err) {
         res.status(500).json({ message: err.message });
