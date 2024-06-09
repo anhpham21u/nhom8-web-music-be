@@ -6,8 +6,7 @@ exports.createSongComment = async (req, res) => {
         const { songId, userId, comment } = req.body;
         const newComment = await SongComment.create({ songId, userId, comment });
 
-        // io.emit('test', 'Đây là message test emit');
-        console.log(io);
+        io.emit('test', 'Đây là message test emit');
         res.status(201).json(newComment);
     } catch (err) {
         res.status(500).json({ message: err.message });
